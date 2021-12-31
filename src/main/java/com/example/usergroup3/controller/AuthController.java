@@ -89,4 +89,9 @@ public class AuthController {
         authService.updateJobCounter(id, request);
     }
 
+    @GetMapping
+    public String hello() {
+        return "Hello world";
+    }
+
 }
