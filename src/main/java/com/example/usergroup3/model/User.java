@@ -26,6 +26,10 @@ public class User {
 
     private String phone;
 
+    private String type;
+
+    private Integer jobCount;
+
     private String role;
 }
 
