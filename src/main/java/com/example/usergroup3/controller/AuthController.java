@@ -21,17 +21,32 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public void signup (@RequestBody User user) {
+    public void signup(@RequestBody User user) {
         authService.signup(user);
     }
 
+    @PostMapping("/signup/many")
+    public void signup(@RequestBody User[] users) {
+        for (User user : users) {
+            authService.signup(user);
+        }
+    }
+
     @PostMapping("/addmechanic")
-    public void addMechanic (@RequestBody User user) {
+    public void addMechanic(@RequestBody User user) {
         authService.createMechanic(user);
     }
 
+    @PostMapping("/addmechanic/many")
+    public void addMechanic(@RequestBody User[] users) {
+        for (User user : users) {
+            authService.createMechanic(user);
+        }
+    }
+
+
     @PostMapping("/login")
-    public String login (@RequestBody LoginRequest loginRequest) {
+    public String login(@RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
 
@@ -41,7 +56,7 @@ public class AuthController {
     }
 
     @GetMapping("/currentuser")
-    public String currentUserName(Principal principal)  {
+    public String currentUserName(Principal principal) {
         try {
             return principal.getName();
         } catch (NullPointerException e) {
@@ -51,7 +66,7 @@ public class AuthController {
     }
 
     @GetMapping("/{id}")
-    public User getUser (@PathVariable(value = "id") Long id) {
+    public User getUser(@PathVariable(value = "id") Long id) {
         return authService.getUser(id);
     }
 
@@ -61,7 +76,7 @@ public class AuthController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        return new ResponseEntity<>(authService.getAllUserByRole(role,page,size), HttpStatus.OK);
+        return new ResponseEntity<>(authService.getAllUserByRole(role, page, size), HttpStatus.OK);
     }
 
     @GetMapping("mechanic/getall/type")
@@ -71,7 +86,7 @@ public class AuthController {
 
     @PostMapping("mechanic/{id}")
     public void updateJobCount(@PathVariable(value = "id") Long id, @RequestParam String request) {
-        authService.updateJobCounter(id,request);
+        authService.updateJobCounter(id, request);
     }
 
 }
