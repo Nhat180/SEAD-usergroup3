@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,6 +50,50 @@ public class AuthService {
     }
 
 
+    public void updateUser(Long id, User user) {
+        User user1 = getUser(id);
+        if (user1.getRole().equals("customer")) {
+            user1.setId(id);
+            user1.setName(user.getName());
+            user1.setJobCount(0);
+            user1.setRole("customer");
+            user1.setAddress(user.getAddress());
+            user1.setEmail(user.getEmail());
+            user1.setPhone(user.getPhone());
+            user1.setPassword(user1.getPassword());
+            user1.setType(null);
+        } else if (user1.getRole().equals("mechanic")) {
+            user1.setId(id);
+            user1.setName(user.getName());
+            user1.setJobCount(user1.getJobCount());
+            user1.setRole("mechanic");
+            user1.setAddress(user.getAddress());
+            user1.setEmail(user.getEmail());
+            user1.setPhone(user.getPhone());
+            user1.setPassword(user1.getPassword());
+            user1.setType(user1.getType());
+        }
+        this.userRepository.save(user1);
+    }
+
+    public String updatePassWord (Long id, String oldPassword, String newPassword) {
+        User user = getUser(id);
+        boolean isMatch = passwordEncoder.matches(oldPassword, user.getPassword());
+        if (isMatch) {
+            user.setPassword(encodePassword(newPassword));
+            userRepository.save(user);
+            return "Success";
+        } else {
+            return "Fail";
+        }
+    }
+
+    public void deleteUser (Long id) {
+        User user = getUser(id);
+        this.userRepository.delete(user);
+    }
+
+
     public String login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(new
                 UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -83,11 +129,25 @@ public class AuthService {
         return user;
     }
 
-    public Map<String, Object> getAllUserByRole(String role, int page, int size) {
+    public Map<String, Object> getAllUserByRole(String role, int page, int size, String[] sort) {
         Map<String, Object> res = new HashMap<>();
         try {
             List<User> userList = new ArrayList<>();
-            Pageable paging = PageRequest.of(page,size);
+            List<Order> orders = new ArrayList<Order>();
+
+            if (sort[0].contains(",")) {
+                // will sort more than 2 fields
+                // sortOrder="field, direction"
+                for (String sortOrder : sort) {
+                    String[] _sort = sortOrder.split(",");
+                    orders.add(new Sort.Order(getSortDirection(_sort[1]), _sort[0]));
+                }
+            } else {
+                // sort=[field, direction]
+                orders.add(new Sort.Order(getSortDirection(sort[1]), sort[0]));
+            }
+
+            Pageable paging = PageRequest.of(page,size,Sort.by(orders));
 
             Page<User> userPage;
 
@@ -133,8 +193,18 @@ public class AuthService {
         this.userRepository.save(mechanic);
     }
 
-
     private String encodePassword (String password) {
         return passwordEncoder.encode(password);
+    }
+
+
+    private Sort.Direction getSortDirection(String direction) {
+        if (direction.equals("asc")) {
+            return Sort.Direction.ASC;
+        } else if (direction.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        return Sort.Direction.ASC;
     }
 }
