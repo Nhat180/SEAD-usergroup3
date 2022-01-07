@@ -44,6 +44,24 @@ public class AuthController {
         }
     }
 
+    @PutMapping("/{id}")
+    public void updateUser (@PathVariable(value = "id") Long id, @RequestBody User user) {
+        authService.updateUser(id, user);
+    }
+
+    @PutMapping("/password/{id}")
+    public String updatePassword (
+            @PathVariable(value = "id") Long id,
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword
+    ) {
+        return authService.updatePassWord(id, oldPassword, newPassword);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser (@PathVariable(value = "id") Long id) {
+        authService.deleteUser(id);
+    }
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
@@ -74,9 +92,10 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> getAllUserByRole(
             @RequestParam(required = false) String role,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id,asc") String[] sort
     ) {
-        return new ResponseEntity<>(authService.getAllUserByRole(role, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(authService.getAllUserByRole(role,page,size,sort), HttpStatus.OK);
     }
 
     @GetMapping("mechanic/getall/type")
