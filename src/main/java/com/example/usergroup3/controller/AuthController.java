@@ -98,6 +98,16 @@ public class AuthController {
         return new ResponseEntity<>(authService.getAllUserByRole(role,page,size,sort), HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchUser(
+            @RequestParam(required = false) String role,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam String keyword
+    ) {
+        return new ResponseEntity<>(authService.searchUser(role,page,size,keyword), HttpStatus.OK);
+    }
+
     @GetMapping("mechanic/getall/type")
     public List<User> getAllMechanicByType(@RequestParam(name = "request") String type) {
         return authService.getAvailableMechanicByType(type);

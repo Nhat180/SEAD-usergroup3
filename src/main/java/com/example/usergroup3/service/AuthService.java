@@ -173,6 +173,44 @@ public class AuthService {
         }
     }
 
+    public Map<String, Object> searchUser(String role, int page, int size, String keyword) {
+        Map<String, Object> res = new HashMap<>();
+        try {
+            List<User> userList = new ArrayList<>();
+            Pageable paging = PageRequest.of(page,size);
+            Page<User> userPage;
+            userPage = userRepository.search(keyword, paging);
+
+            if(role.equals("customer")) {
+                for (int i = 0; i < userPage.getContent().size(); i++) {
+                    if (userPage.getContent().get(i).getRole().equals("customer")) {
+                        userList.add(userPage.getContent().get(i));
+                    }
+                }
+            } else if (role.equals("mechanic")) {
+                for (int i = 0; i < userPage.getContent().size(); i++) {
+                    if (userPage.getContent().get(i).getRole().equals("mechanic")) {
+                        userList.add(userPage.getContent().get(i));
+                    }
+                }
+            } else {
+                userList = userPage.getContent();
+            }
+
+            res.put("users", userList);
+            res.put("currentPage", userPage.getNumber());
+            res.put("totalUser", userPage.getTotalElements());
+            res.put("totalPages", userPage.getTotalPages());
+
+            return res;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public List<User> getAvailableMechanicByType (String type) {
         List<User> mechanics = this.userRepository.findAllByType(type);
         for (int i = 0; i < mechanics.size(); i++) {
