@@ -129,7 +129,7 @@ public class AuthService {
         return user;
     }
 
-    public Map<String, Object> getAllUserByRole(String role, int page, int size, String[] sort) {
+    public Map<String, Object> getAllUserByRole(String role, int page, int size, String[] sort, String keyword) {
         Map<String, Object> res = new HashMap<>();
         try {
             List<User> userList = new ArrayList<>();
@@ -140,29 +140,42 @@ public class AuthService {
                 // sortOrder="field, direction"
                 for (String sortOrder : sort) {
                     String[] _sort = sortOrder.split(",");
-                    orders.add(new Sort.Order(getSortDirection(_sort[1]), _sort[0]));
+                    orders.add(new Order(getSortDirection(_sort[1]), _sort[0]));
                 }
             } else {
                 // sort=[field, direction]
-                orders.add(new Sort.Order(getSortDirection(sort[1]), sort[0]));
+                orders.add(new Order(getSortDirection(sort[1]), sort[0]));
             }
 
             Pageable paging = PageRequest.of(page,size,Sort.by(orders));
 
             Page<User> userPage;
 
-            // paging based on the request of page and size from front-end
+            // paging based on the request of page, size and keyword from front-end
             if (role == null) {
-                userPage = userRepository.findAll(paging);
+                if (keyword == null) {
+                    userPage = userRepository.findAll(paging);
+                } else {
+                    userPage = userRepository.search(keyword,paging);
+                }
+                userList = userPage.getContent(); // Assign paging content to list and then return to UI
             } else {
-                userPage = userRepository.findAllByRole(role, paging);
+                if (keyword == null) {
+                    userPage = userRepository.findAllByRole(role, paging);
+                    userList = userPage.getContent(); // Assign paging content to list and then return to UI
+                } else {
+                    userPage = userRepository.search(keyword,paging);
+                    for (int i = 0; i < userPage.getContent().size(); i++) {
+                        if (userPage.getContent().get(i).getRole().equals(role)) {
+                            userList.add(userPage.getContent().get(i));
+                        }
+                    }
+                }
             }
-
-            userList = userPage.getContent(); // Assign paging content to list and then return to UI
 
             res.put("users", userList);
             res.put("currentPage", userPage.getNumber());
-            res.put("totalUser", userPage.getTotalElements());
+            res.put("totalUser", userList.size());
             res.put("totalPages", userPage.getTotalPages());
 
             return res;
@@ -173,43 +186,6 @@ public class AuthService {
         }
     }
 
-    public Map<String, Object> searchUser(String role, int page, int size, String keyword) {
-        Map<String, Object> res = new HashMap<>();
-        try {
-            List<User> userList = new ArrayList<>();
-            Pageable paging = PageRequest.of(page,size);
-            Page<User> userPage;
-            userPage = userRepository.search(keyword, paging);
-
-            if(role.equals("customer")) {
-                for (int i = 0; i < userPage.getContent().size(); i++) {
-                    if (userPage.getContent().get(i).getRole().equals("customer")) {
-                        userList.add(userPage.getContent().get(i));
-                    }
-                }
-            } else if (role.equals("mechanic")) {
-                for (int i = 0; i < userPage.getContent().size(); i++) {
-                    if (userPage.getContent().get(i).getRole().equals("mechanic")) {
-                        userList.add(userPage.getContent().get(i));
-                    }
-                }
-            } else {
-                userList = userPage.getContent();
-            }
-
-            res.put("users", userList);
-            res.put("currentPage", userPage.getNumber());
-            res.put("totalUser", userPage.getTotalElements());
-            res.put("totalPages", userPage.getTotalPages());
-
-            return res;
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public List<User> getAvailableMechanicByType (String type) {
         List<User> mechanics = this.userRepository.findAllByType(type);
