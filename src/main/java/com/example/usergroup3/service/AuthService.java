@@ -153,14 +153,14 @@ public class AuthService {
 
             // paging based on the request of page, size and keyword from front-end
             if (role == null) {
-                if (keyword == null) {
+                if (keyword == null || keyword.equals("")) {
                     userPage = userRepository.findAll(paging);
                 } else {
                     userPage = userRepository.search(keyword,paging);
                 }
                 userList = userPage.getContent(); // Assign paging content to list and then return to UI
             } else {
-                if (keyword == null) {
+                if (keyword == null || keyword.equals("")) {
                     userPage = userRepository.findAllByRole(role, paging);
                     userList = userPage.getContent(); // Assign paging content to list and then return to UI
                 } else {
@@ -175,7 +175,7 @@ public class AuthService {
 
             res.put("users", userList);
             res.put("currentPage", userPage.getNumber());
-            res.put("totalUser", userList.size());
+            res.put("totalUser", userPage.getTotalElements());
             res.put("totalPages", userPage.getTotalPages());
 
             return res;
