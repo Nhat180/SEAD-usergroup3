@@ -6,6 +6,8 @@ import com.example.usergroup3.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -73,13 +75,34 @@ public class AuthController {
         return authService.logout();
     }
 
+//    @GetMapping("/currentuser")
+//    public String currentUserName(Principal principal) {
+//        try {
+//            return principal.getName();
+//        } catch (NullPointerException e) {
+//            e.printStackTrace();
+//            return "You still not login";
+//        }
+//    }
+
     @GetMapping("/currentuser")
-    public String currentUserName(Principal principal) {
+    public User currentUserName(@AuthenticationPrincipal OAuth2User oAuth2User,
+                                Principal principal)  {
         try {
-            return principal.getName();
+            User user = new User();
+            user.setId(Long.parseLong(principal.getName()));
+            user.setName(oAuth2User.getAttribute("name"));
+            user.setEmail(oAuth2User.getAttribute("email"));
+            user.setRole("customer");
+            user.setType(null);
+            user.setPhone(null);
+            user.setAddress(null);
+            user.setJobCount(0);
+            user.setPassword(null);
+            return user;
         } catch (NullPointerException e) {
             e.printStackTrace();
-            return "You still not login";
+            return null;
         }
     }
 
@@ -112,7 +135,7 @@ public class AuthController {
 
     @GetMapping
     public String hello() {
-        return "Hello world";
+        return "Hello Nhat world";
     }
 
 }
