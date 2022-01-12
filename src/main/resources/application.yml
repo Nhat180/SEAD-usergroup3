@@ -23,8 +23,8 @@ spring:
         - id: service
           uri: https://service-sead-group3.herokuapp.com
           predicates:
-            - Path=/service/**
+            - Path=/**
         - id: service_trans
           uri: https://service-trans-sead-group3.herokuapp.com
           predicates:
-            - Path=/servicetran/**
+            - Path=/**
