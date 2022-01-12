@@ -17,3 +17,14 @@ spring:
             scope:
               - user:email
               - read:user
+  cloud:
+    gateway:
+      routes:
+        - id: service
+          uri: https://service-sead-group3.herokuapp.com
+          predicates:
+            - Path=/service/**
+        - id: service_trans
+          uri: https://service-trans-sead-group3.herokuapp.com
+          predicates:
+            - Path=/servicetran/**
