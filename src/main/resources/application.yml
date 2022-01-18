@@ -6,14 +6,14 @@ spring:
           google:
             clientId: 412957065085-k8vpiijvgfb20d7lkn9engnmccftbcdf.apps.googleusercontent.com
             clientSecret: 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
-            redirectUri: "https://sead-usergroup3.herokuapp.com/login/oauth2/code/{registrationId}"
+            redirectUri: "https://user-sead-group3.herokuapp.com/login/oauth2/code/{registrationId}"
             scope:
               - email
               - profile
           github:
             clientId: a312195c4f28472f4f23
             clientSecret: 8b80e765fc7974099af2ab1e0cd3cb9218afdb6a
-            redirectUri: "https://sead-usergroup3.herokuapp.com/login/oauth2/code/{registrationId}"
+            redirectUri: "https://user-sead-group3.herokuapp.com/login/oauth2/code/{registrationId}"
             scope:
               - user:email
               - read:user
