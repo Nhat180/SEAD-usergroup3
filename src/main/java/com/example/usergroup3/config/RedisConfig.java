@@ -7,17 +7,17 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
-//@Configuration
-//@EnableCaching
+@Configuration
+@EnableCaching
 public class RedisConfig {
     // Setting up the jedis connection factory.
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory jcf = new JedisConnectionFactory();
         jcf.setDatabase(0);
-//		jcf.setHostName("ec2-54-211-220-29.compute-1.amazonaws.com");
-        jcf.setHostName("localhost");
-        jcf.setPort(6379);
+		jcf.setHostName("ec2-54-159-251-184.compute-1.amazonaws.com");
+//        jcf.setHostName("localhost");
+        jcf.setPort(6380);
         jcf.setTimeout(30 * 1000);
 //		jcf.setPassword("hoang");
         return jcf;
