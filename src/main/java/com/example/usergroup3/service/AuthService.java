@@ -5,6 +5,7 @@ import com.example.usergroup3.model.User;
 import com.example.usergroup3.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class AuthService {
+    final String USER_CACHE = "User";
 
     @Autowired
     private UserRepository userRepository;
@@ -35,20 +37,17 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-
     public void signup (User user) {
         user.setPassword(encodePassword(user.getPassword()));
         user.setRole("customer");
         userRepository.save(user);
     }
 
-
     public void createMechanic (User user) {
         user.setPassword(encodePassword(user.getPassword()));
         user.setRole("mechanic");
         userRepository.save(user);
     }
-
 
     public void updateUser(Long id, User user) {
         User user1 = getUser(id);
@@ -93,7 +92,7 @@ public class AuthService {
         this.userRepository.delete(user);
     }
 
-
+    // No redis
     public String login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(new
                 UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -118,6 +117,7 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("Not found user"));
     }
 
+    @Cacheable(value = USER_CACHE, key = "#id")
     public User getUser(Long id) {
         User user = new User();
         try {
@@ -186,7 +186,7 @@ public class AuthService {
         }
     }
 
-
+    @Cacheable(value = USER_CACHE, key = "#type")
     public List<User> getAvailableMechanicByType (String type) {
         List<User> mechanics = this.userRepository.findAllByType(type);
         for (int i = 0; i < mechanics.size(); i++) {

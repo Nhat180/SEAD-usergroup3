@@ -22,11 +22,12 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/signup")
-    public void signup(@RequestBody User user) {
-        authService.signup(user);
-    }
+//    @PostMapping("/signup")
+//    public void signup(@RequestBody User user) {
+//        authService.signup(user);
+//    }
 
+    // This one is for quick data insertion so there is no need for kafka
     @PostMapping("/signup/many")
     public void signup(@RequestBody User[] users) {
         for (User user : users) {
@@ -34,11 +35,12 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/addmechanic")
-    public void addMechanic(@RequestBody User user) {
-        authService.createMechanic(user);
-    }
+//    @PostMapping("/addmechanic")
+//    public void addMechanic(@RequestBody User user) {
+//        authService.createMechanic(user);
+//    }
 
+    // This one is for quick data insertion so there is no need for kafka
     @PostMapping("/addmechanic/many")
     public void addMechanic(@RequestBody User[] users) {
         for (User user : users) {
@@ -46,10 +48,10 @@ public class AuthController {
         }
     }
 
-    @PutMapping("/{id}")
-    public void updateUser (@PathVariable(value = "id") Long id, @RequestBody User user) {
-        authService.updateUser(id, user);
-    }
+//    @PutMapping("/{id}")
+//    public void updateUser (@PathVariable(value = "id") Long id, @RequestBody User user) {
+//        authService.updateUser(id, user);
+//    }
 
     @PutMapping("/password/{id}")
     public String updatePassword (
@@ -85,6 +87,7 @@ public class AuthController {
 //        }
 //    }
 
+    // No redis
     @GetMapping("/currentuser")
     public User currentUserName(@AuthenticationPrincipal OAuth2User oAuth2User,
                                 Principal principal)  {
@@ -128,10 +131,10 @@ public class AuthController {
         return authService.getAvailableMechanicByType(type);
     }
 
-    @PostMapping("mechanic/{id}")
-    public void updateJobCount(@PathVariable(value = "id") Long id, @RequestParam String request) {
-        authService.updateJobCounter(id, request);
-    }
+//    @PostMapping("mechanic/{id}")
+//    public void updateJobCount(@PathVariable(value = "id") Long id, @RequestParam String request) {
+//        authService.updateJobCounter(id, request);
+//    }
 
     @GetMapping
     public String hello() {

@@ -28,3 +28,13 @@ spring:
           uri: https://service-trans-sead-group3.herokuapp.com
           predicates:
             - Path=/**
+  kafka:
+    bootstrap-servers: ${kafka_bootstrap_servers:localhost:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
