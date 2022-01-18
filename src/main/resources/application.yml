@@ -4,9 +4,9 @@ spring:
       client:
         registration:
           google:
-            clientId: 412957065085-qnt4gscg8bls830k1l1rfu9i9hru5chk.apps.googleusercontent.com
-            clientSecret: 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
-            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            clientId: 412957065085-k8vpiijvgfb20d7lkn9engnmccftbcdf.apps.googleusercontent.com
+            clientSecret: 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
+            redirectUri: "https://sead-usergroup3.herokuapp.com/login/oauth2/code/{registrationId}"
             scope:
               - email
               - profile

@@ -39,12 +39,15 @@ public class AuthService {
 
     public void signup (User user) {
         user.setPassword(encodePassword(user.getPassword()));
+        user.setJobCount(0);
+        user.setType(null);
         user.setRole("customer");
         userRepository.save(user);
     }
 
     public void createMechanic (User user) {
         user.setPassword(encodePassword(user.getPassword()));
+        user.setJobCount(0);
         user.setRole("mechanic");
         userRepository.save(user);
     }
@@ -93,11 +96,12 @@ public class AuthService {
     }
 
     // No redis
-    public String login(LoginRequest loginRequest) {
+    public User login(LoginRequest loginRequest) {
         Authentication authenticate = authenticationManager.authenticate(new
                 UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        return authenticate.getName();
+        return this.userRepository.findByEmail(authenticate.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Not found user"));
     }
 
     public String logout() {

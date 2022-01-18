@@ -68,7 +68,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public User login (@RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
     }
 
@@ -93,7 +93,8 @@ public class AuthController {
                                 Principal principal)  {
         try {
             User user = new User();
-            user.setId(Long.parseLong(principal.getName()));
+//            user.setId(Long.parseLong(principal.getName()));
+            user.setId(null);
             user.setName(oAuth2User.getAttribute("name"));
             user.setEmail(oAuth2User.getAttribute("email"));
             user.setRole("customer");
