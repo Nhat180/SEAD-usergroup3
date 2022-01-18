@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthConsumer {
     final Logger logger = LoggerFactory.getLogger(AuthConsumer.class);
-    final String TOPIC = "USER";
+    final String TOPIC = "6c8s3gy1-default";
     final String GROUP_ID = "USER_ID";
 
     @Autowired

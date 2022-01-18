@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/auth/kafka")
+@RequestMapping("/auth")
 public class AuthKafkaController {
     static final Logger logger = LoggerFactory.getLogger(AuthKafkaController.class);
-    private final String TOPIC = "USER";
+    private final String TOPIC = "6c8s3gy1-default";
 
     @Autowired
     AuthService authService;
